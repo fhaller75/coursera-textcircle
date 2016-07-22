@@ -4,9 +4,16 @@
 
 <body>
 	<h1>Welcome to TextCircle</h1>
-	{{>editor}}
+
+    {{> date_display}}
+
+	{{> editor}}
 </body>
 
+<template name="date_display">
+    {{current_date}}
+</template>
+
 <template name="editor">
-    {{>sharejsCM docid=docid id="editor"}}
+    {{> sharejsCM docid=docid id="editor"}}
 </template>
