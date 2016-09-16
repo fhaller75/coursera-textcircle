@@ -18,7 +18,8 @@ if (Meteor.isClient){
             // console.log("In config editor helper");
             return function(editor){
                 editor.setOption("lineNumbers", true);
-                editor.setOption("mode", "html");
+                editor.setOption("theme", "cobalt");
+                // editor.setOption("mode", "html");
                 editor.on("change", function(cm_editor, info){
                     // console.log(cm_editor.getValue());
                     $("#viewer_iframe").contents().find("html").html(cm_editor.getValue());
