@@ -5,14 +5,8 @@ if (Meteor.isClient){
 
     Template.editor.helpers({
         docid:function(){
-            // console.log("In docid editor helper");
-            var doc = Documents.findOne();
-            if (doc){
-                return doc._id;
-            }
-            else {
-                return undefined;
-            }
+            setupCurrentDocument();
+            return Session.get("docid");
         },
         config:function(){
             // console.log("In config editor helper");
@@ -58,7 +52,12 @@ if (Meteor.isClient){
                 alert("Please login to create a document.");
             }
             else { // user is logged in => create doc
-                Meteor.call("addDoc");
+                var id = Meteor.call("addDoc", function(err, res){
+                    if (!err){ // all good
+                        console.log("click event callback: got id "+res);
+                        Session.set("docid", res);
+                    }
+                });
             }
         }
     })    
@@ -84,7 +83,9 @@ Meteor.methods({
             doc = {owner:       this.userId,
                    createdOn:   new Date(),
                    title:       "untitled document"};
-            Documents.insert(doc);
+            var id = Documents.insert(doc);
+            console.log("addDoc method: got id "+id);
+            return id;
         }
     },
     addEditingUsers:function(){
@@ -106,3 +107,14 @@ Meteor.methods({
         EditingUsers.upsert({_id:eusers._id}, eusers);
     }
 })
+
+function setupCurrentDocument(){
+    var doc;
+    if (!Session.get("docid")){ // no doc is set yet
+        doc = Documents.findOne();
+        if (doc){
+            Session.set("docid", doc._id);
+        }
+    }
+}
+
