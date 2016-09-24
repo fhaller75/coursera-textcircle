@@ -40,6 +40,26 @@ if (Meteor.isClient){
         }
     })
 
+    Template.navbar.helpers({
+        documents:function(){
+            return Documents.find({});
+        }
+    })
+
+    Template.docMeta.helpers({
+        document:function(){
+            return Documents.findOne({_id:Session.get("docid")});
+        }
+    })
+
+    Template.editableText.helpers({
+        userCanEdit:function(doc,Collection){
+            // user can edit if owns the doc
+            // console.log(this.context);
+            // console.log("user:"+Meteor.userId());
+            return this.context.owner === Meteor.userId();
+        }
+    })
 
     ////////////
     /// EVENTS
@@ -59,6 +79,10 @@ if (Meteor.isClient){
                     }
                 });
             }
+        },
+        "click .js-load-doc":function(event){
+            console.log(this);
+            Session.set("docid", this._id);
         }
     })    
 
