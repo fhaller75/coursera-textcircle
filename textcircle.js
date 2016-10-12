@@ -42,7 +42,7 @@ if (Meteor.isClient){
 
     Template.navbar.helpers({
         documents:function(){
-            return Documents.find({});
+            return Documents.find();
         }
     })
 
@@ -84,7 +84,15 @@ if (Meteor.isClient){
             console.log(this);
             Session.set("docid", this._id);
         }
-    })    
+    })
+
+    Template.docMeta.events({
+        "click .js-tog-private":function(event){
+            // console.log(event.target.checked);
+            var doc = {_id:Session.get("docid"), isPrivate:event.target.checked};
+            Meteor.call("updateDocPrivacy", doc);
+        }    
+    })
 
 } // end isClient
 
@@ -129,6 +137,15 @@ Meteor.methods({
         eusers.users[this.userId] = user;
 
         EditingUsers.upsert({_id:eusers._id}, eusers);
+    },
+    updateDocPrivacy:function(doc){
+        console.log("method updateDocPrivacy");
+        console.log(doc);
+        var realdoc = Documents.findOne({_id:doc._id, owner:this.userId});
+        if (realdoc){
+            realdoc.isPrivate = doc.isPrivate;
+            Documents.update({_id:doc._id}, realdoc);
+        }
     }
 })
 
