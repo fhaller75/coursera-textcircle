@@ -1,5 +1,14 @@
 
 Meteor.methods({
+    addComment:function(comment){
+        console.log("method: addComment");
+        if (this.userId){
+            comment.createdOn = new Date();
+            comment.userId = this.userId;
+            return Comments.insert(comment);
+        }
+        return;
+    },
     addDoc:function(){
         var doc;
         if (!this.userId){ // user not logged in
