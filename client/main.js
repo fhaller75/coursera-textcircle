@@ -1,6 +1,7 @@
 
 Meteor.subscribe("documents");
 Meteor.subscribe("editingUsers");
+Meteor.subscribe("comments");
 
 Router.configure({
   layoutTemplate: 'ApplicationLayout'
@@ -90,6 +91,12 @@ Template.editableText.helpers({
         // console.log(this.context);
         // console.log("user:"+Meteor.userId());
         return this.context.owner === Meteor.userId();
+    }
+})
+
+Template.commentList.helpers({
+    comments:function(){
+        return Comments.find({docid:Session.get("docid")});
     }
 })
 
